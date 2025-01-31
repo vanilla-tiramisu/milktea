@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
-  <header>
-  </header>
-
   <RouterView />
 </template>
 
 <style scoped>
-header {
+/* header {
   line-height: 1.5;
   max-height: 100vh;
 }
@@ -72,11 +68,11 @@ nav a:first-of-type {
     padding: 1rem 0;
     margin-top: 1rem;
   }
-}
+} */
 </style>
 
 <style>
-table {
+/* table {
   width: 100%;
   border-collapse: collapse;
   border: 1px solid #ddd;
@@ -225,4 +221,5 @@ hr {
   background: #f1f1f1;
   margin: 20px 0;
 }
+*/
 </style>
