@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import markdownit from 'markdown-it';
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import MessageBubble from '@/components/Items/MessageBubble.vue';
 const messages = ref([{ text: "你好！我是你的AI伙伴", isUser: false }]);
 
@@ -12,6 +12,30 @@ const md = new markdownit({
 });
 
 const inputText = ref('');
+onBeforeMount(() => {
+    try {
+        fetch('http://localhost:3000/chat/history')
+            .then((res: Response) => res.json())
+            .then((data: any) => {
+                messages.value = data.map((msg: any) => {
+                    console.log(msg);
+                    return {
+                        text: md.render(msg.content),
+                        isUser: msg.role === 'user'
+                    }
+                });
+            });
+
+    } catch (error) {
+        console.error(error);
+    }
+})
+// TODO：组件创建后，自动滚动到底部
+// const scrollBottom = () => {
+//     const messagesDiv = document.querySelector('.messages');
+//     messagesDiv.scrollTop = messagesDiv.scrollHeight;
+// };
+
 
 const getAIResponse = (input: string) => {
     let req = {
@@ -61,6 +85,13 @@ const handleEnter = (e: KeyboardEvent) => {
         handleSend();
     }
 };
+
+
+// created
+// scrollBottom();
+
+
+
 </script>
 
 <template>

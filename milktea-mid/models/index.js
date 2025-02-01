@@ -7,13 +7,10 @@ const Message = sequelize.define('Message', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    isAI: {
-        type: DataTypes.BOOLEAN,
+    role: {
+        type: DataTypes.TEXT,
         defaultValue: false
     },
-    metadata: {
-        type: DataTypes.JSON // 存储额外信息如时间戳等
-    }
 });
 
 // 关键信息存储模型

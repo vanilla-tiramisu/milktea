@@ -1,17 +1,19 @@
-const { openai, history, } = require('../services/chatService');
+const { model } = require('../config/config');
+const { openai, history, processConversation, getHistoryFromDb } = require('../services/chatService');
 
 const handleChatRequest = async (req, res) => {
     try {
-        history.push({ role: "user", content: req.body.content });
+        let userMessage = { role: "user", content: req.body.content };
+        history.push(userMessage);
+        processConversation(userMessage);
         const completion = await openai.chat.completions.create({
             messages: history,
-            model: "moonshot-v1-8k",
+            model: model,
         });
-        history.push(completion.choices[0].message);
-        let message = completion.choices[0].message.content;
-        console.log(completion.choices[0].message);
-        res.send(message);
-
+        let systemMessage = completion.choices[0].message;
+        history.push(systemMessage);
+        res.send(systemMessage.content);
+        processConversation(systemMessage);
     } catch (err) {
         const message = handleError(err);
         res.send(message);
@@ -31,6 +33,22 @@ const handleError = (err) => {
     console.log(err, message);
     return message;
 };
+
+const getHistory = async (req, res) => {
+    try {
+        const messages = await getHistoryFromDb();
+        console.log(messages);
+
+        res.send(messages);
+    } catch (err) {
+        console.log(err);
+        res.send("获取历史记录失败");
+    }
+}
+
+
+
 module.exports = {
-    handleChatRequest
+    handleChatRequest,
+    getHistory
 };
