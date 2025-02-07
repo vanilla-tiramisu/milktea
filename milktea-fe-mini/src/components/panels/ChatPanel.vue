@@ -2,7 +2,7 @@
 import markdownit from 'markdown-it';
 import { onBeforeMount, ref } from 'vue';
 import MessageBubble from '@/components/Items/MessageBubble.vue';
-const messages = ref([{ text: "你好！我是你的AI伙伴", isUser: false }]);
+const messages = ref([{ text: "你好", isUser: false }]);
 
 const md = new markdownit({
     breaks: true,

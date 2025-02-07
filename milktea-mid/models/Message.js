@@ -13,23 +13,9 @@ const Message = sequelize.define('Message', {
     },
 });
 
-// 关键信息存储模型
-const KeyInfo = sequelize.define('KeyInfo', {
-    key: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    value: {
-        type: DataTypes.TEXT,
-        allowNull: false
-    },
-    context: {
-        type: DataTypes.TEXT // 存储获取该信息的上下文
-    }
-});
 
 (async () => {
     await sequelize.sync();
 })();
 
-module.exports = { Message, KeyInfo };
+module.exports = { Message, };

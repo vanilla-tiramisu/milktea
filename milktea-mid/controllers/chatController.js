@@ -1,19 +1,21 @@
-const { model } = require('../config/config');
-const { openai, history, processConversation, getHistoryFromDb } = require('../services/chatService');
+const { baseURL, apiKey, model, } = require('../config/config');
+const { history, processConversation, getHistoryFromDb } = require('../services/chatService');
+const OpenAI = require('openai');
 
 const handleChatRequest = async (req, res) => {
     try {
         let userMessage = { role: "user", content: req.body.content };
-        history.push(userMessage);
         processConversation(userMessage);
-        const completion = await openai.chat.completions.create({
+        const completion = await new OpenAI({
+            baseURL: baseURL,
+            apiKey: apiKey,
+        }).chat.completions.create({
             messages: history,
             model: model,
         });
         let systemMessage = completion.choices[0].message;
-        history.push(systemMessage);
         res.send(systemMessage.content);
-        processConversation(systemMessage);
+        processConversation(systemMessage); // 需要保留，因为有
     } catch (err) {
         const message = handleError(err);
         res.send(message);
@@ -28,7 +30,7 @@ const handleError = (err) => {
     } else if (err.type === 'exceeded_current_quota_error') {
         message = '账户余额不足，请充值后再找我聊天哦！';
     } else {
-        message = '我还不知道怎么回答这个问题呢！';
+        message = '系统问题，请稍后再试';
     }
     console.log(err, message);
     return message;
@@ -37,7 +39,7 @@ const handleError = (err) => {
 const getHistory = async (req, res) => {
     try {
         const messages = await getHistoryFromDb();
-        console.log(messages);
+        // console.log(messages);
 
         res.send(messages);
     } catch (err) {
